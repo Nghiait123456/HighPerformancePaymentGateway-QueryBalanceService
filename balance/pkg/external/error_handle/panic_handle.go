@@ -2,9 +2,9 @@ package error_handle
 
 import (
 	"fmt"
-	sentryfiber "github.com/aldy505/sentry-fiber"
 	"github.com/getsentry/sentry-go"
 	"github.com/gofiber/fiber/v2"
+	"github.com/high-performance-payment-gateway/balance-service/balance/pkg/external/sentry_fiber"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"time"
@@ -48,7 +48,7 @@ func (p *PanicHandle) Init() {
 	}
 
 	//resign middleware capture panic
-	p.app.Use(sentryfiber.New(sentryfiber.Options{
+	p.app.Use(sentry_fiber.New(sentry_fiber.Options{
 		Repanic:         p.alert.Repanic,
 		WaitForDelivery: p.alert.WaitForDelivery,
 		Timeout:         p.alert.Timeout,

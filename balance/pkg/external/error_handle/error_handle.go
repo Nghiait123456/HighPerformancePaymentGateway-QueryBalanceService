@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/high-performance-payment-gateway/balance-service/balance/pkg/external/error_identification"
+	log "github.com/sirupsen/logrus"
 )
 
 type (
@@ -32,17 +34,34 @@ func CustomMessageError(ctx *fiber.Ctx, err error) error {
 	code := fiber.StatusInternalServerError
 
 	// Retrieve the custom status code if it's an fiber.*Error
-	if e, ok := err.(*fiber.Error); ok {
-		code = e.Code
-	}
+	//if e, ok := err.(*fiber.Error); ok {
+	//	code = e.Code
+	//}
 
-	// Send custom error page
-	err = ctx.Status(code).SendFile(fmt.Sprintf("./%d.html", code))
+	return ctx.Status(code).SendString(LogAndSendErrorText(ctx))
+
+	//// Send custom error page
+	//err = ctx.Status(code).SendFile(fmt.Sprintf("./%d.html", code))
+	//if err != nil {
+	//	// In case the SendFile fails
+	//	return ctx.Status(fiber.StatusInternalServerError).SendString("Something went wrong, Internal Server Error")
+	//}
+
+}
+
+func LogAndSendErrorText(ctx *fiber.Ctx) string {
+	errId, err := error_identification.GetErrIdFrCtx(ctx)
 	if err != nil {
-		// In case the SendFile fails
-		return ctx.Status(fiber.StatusInternalServerError).SendString("Something went wrong, Internal Server Error")
+		log.WithFields(log.Fields{
+			"errorM": err.Error(),
+		}).Error("dont find ErrIdFrCtx")
+		errId = ""
 	}
 
-	// Return from handler
-	return nil
+	log.WithFields(log.Fields{
+		"errorM": fmt.Sprintf("panic with errId %v", errId),
+	})
+
+	errM := fmt.Sprintf("Something went wrong, Internal Server Error, error_id = %v", errId)
+	return errM
 }

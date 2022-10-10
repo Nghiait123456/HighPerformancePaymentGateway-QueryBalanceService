@@ -8,6 +8,7 @@ import (
 	"github.com/high-performance-payment-gateway/balance-service/balance/infrastructure/server/web_server"
 	"github.com/high-performance-payment-gateway/balance-service/balance/interfaces/controller/api/handle"
 	"github.com/high-performance-payment-gateway/balance-service/balance/pkg/external/error_handle"
+	"github.com/high-performance-payment-gateway/balance-service/balance/pkg/external/error_identification"
 	"github.com/high-performance-payment-gateway/balance-service/balance/pkg/external/log_init"
 	"os"
 )
@@ -69,6 +70,10 @@ func (m Module) NewWebServer() web_server.HttpServer {
 	}
 	alertPanic := error_handle.NewPanicHandle(&alertAc, app)
 	alertPanic.Init()
+
+	// add middleware identification error
+	errId := error_identification.NewErrorIdentification()
+	app.Use(errId.ResignInMiddleware)
 
 	return app
 }
