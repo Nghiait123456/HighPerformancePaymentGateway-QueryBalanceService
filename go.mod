@@ -15,6 +15,7 @@ require (
 )
 
 require (
+	github.com/Nghiait123456/redlock v1.0.5 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/dchest/uniuri v0.0.0-20200228104902-7aecb25e1fe5 // indirect
@@ -24,6 +25,8 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/gofiber/contrib/fibersentry v0.0.0-20220911111204-91048590f414 // indirect
 	github.com/google/wire v0.5.0 // indirect
+	github.com/hashicorp/errwrap v1.0.0 // indirect
+	github.com/hashicorp/go-multierror v1.1.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect

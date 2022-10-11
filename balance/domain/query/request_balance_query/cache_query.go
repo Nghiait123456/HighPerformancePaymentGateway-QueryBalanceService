@@ -16,8 +16,7 @@ type (
 		rc redis.RedisClusterInterface
 	}
 
-	ParamQueryCache = ParamQuery
-	//DataCache =
+	ParamQueryCache    = ParamQuery
 	ResponseQueryCache struct {
 		Data                      DataQuery
 		IsUseDataForResponse      bool
@@ -25,7 +24,10 @@ type (
 		Err                       error
 	}
 
-	DataSavedCache = DataQuery
+	DataSavedCache struct {
+		Data       DataQuery
+		IsHaveLock bool
+	}
 
 	QueryCacheInterface interface {
 		QueryRequestBalance(p ParamQueryCache) ResponseQueryCache
@@ -65,12 +67,22 @@ func (q *QueryCache) QueryRequestBalance(p ParamQueryCache) ResponseQueryCache {
 		}
 	}
 
+	if RqBalanceObj.IsHaveLock == false {
+		return ResponseQueryCache{
+			Data:                      RqBalanceObj.Data,
+			IsUseDataForResponse:      true,
+			IsContinueUpdateCacheFrDB: false,
+			Err:                       nil,
+		}
+	}
+
 	return ResponseQueryCache{
-		Data:                      RqBalanceObj,
-		IsUseDataForResponse:      true,
+		Data:                      DataQuery{},
+		IsUseDataForResponse:      false,
 		IsContinueUpdateCacheFrDB: false,
 		Err:                       nil,
 	}
+
 }
 
 func (q QueryCache) KeyCache(p ParamQueryCache) (string, error) {
