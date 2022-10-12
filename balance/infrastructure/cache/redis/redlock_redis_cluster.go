@@ -28,8 +28,8 @@ func (r RedLockCluster) NewMutex(name string, options ...Option) *redlock.Mutex 
 	return r.RedLock.NewMutex(name, options...)
 }
 
-func NewRedLockCluster(cc *redis.ClusterClient) *RedLockCluster {
-	var _ RedLockClusterInterface = (*RedLockCluster)(nil)
+func NewRedLockCluster(cc *redis.ClusterClient) RedLockClusterInterface {
+	//var _ RedLockClusterInterface = (*RedLockCluster)(nil)
 	rl := RedLockCluster{
 		cc: cc,
 	}

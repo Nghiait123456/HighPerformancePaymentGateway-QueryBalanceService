@@ -4,10 +4,6 @@ import "github.com/high-performance-payment-gateway/balance-service/balance/doma
 
 type (
 	RecordLock = request_balance_query.DataSavedCache
-
-	RecordLockInterface interface {
-		CreateRecordLock() error
-	}
 )
 
 func CreateRecordLock() RecordLock {

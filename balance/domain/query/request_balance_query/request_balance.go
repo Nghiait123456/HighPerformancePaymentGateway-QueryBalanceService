@@ -65,6 +65,14 @@ func (or *OneRequest) HandleOneRequestQuery(qp ParamQuery) DataResponse {
 		//todo update cache end response
 	}
 
+	if rsQrCache.IsUseDataForResponse == false && rsQrCache.IsContinueUpdateCacheFrDB == false {
+		return DataResponse{
+			Data:    DataQueryDB{},
+			Status:  false,
+			Message: "data is refreshing, please wait and try again late",
+		}
+	}
+
 	//default error
 	return DataResponse{
 		Status: false,
