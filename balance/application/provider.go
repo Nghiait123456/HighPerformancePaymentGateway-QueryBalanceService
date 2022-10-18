@@ -6,8 +6,9 @@ import (
 )
 
 var ProviderAllPartnerBalanceQuery = wire.NewSet(
-	NewAllPartnerBalance,
-	wire.Bind(new(request_balance_query.OneRequestInterface), new(*request_balance_query.OneRequest)),
+	NewAllPartnerBalanceQuery,
+	request_balance_query.NewOneRequest,
+	wire.Bind(new(AllPartnerBalanceQueryInterface), new(*AllPartnerBalanceQuery)),
 )
 
 var ProviderService = wire.NewSet(

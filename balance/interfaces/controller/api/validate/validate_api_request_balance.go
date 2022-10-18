@@ -15,7 +15,7 @@ import (
 type (
 	ValidateApiRequestBalance struct {
 		VB  validate.ValidateBaseInterface
-		Dto dto_api_request.RequestBalanceDto
+		Dto dto_api_request.OneRequestBalanceQueryDto
 	}
 )
 
@@ -52,11 +52,11 @@ func (v *ValidateApiRequestBalance) Validate() (dto_api_response.ResponseRequest
 		if errCE != nil {
 			fmt.Println("invalidate error")
 			res := dto_api_response.ResponseRequestBalanceQuery{
-				HttpCode:    http_status.StatusBadRequest,
-				Status:      dto_api_response.STATUS_ERROR,
-				Code:        http_status.StatusBadRequest,
-				Message:     "Param is invalid format, please check and try again",
-				ErrorDetail: errV.Error(),
+				HttpCode: http_status.StatusBadRequest,
+				Status:   dto_api_response.STATUS_ERROR,
+				Code:     http_status.StatusBadRequest,
+				Message:  "Param is invalid format, please check and try again",
+				Data:     "",
 			}
 			return res, errV
 		}
@@ -75,11 +75,11 @@ func (v *ValidateApiRequestBalance) Validate() (dto_api_response.ResponseRequest
 		}
 
 		res := dto_api_response.ResponseRequestBalanceQuery{
-			HttpCode:    http_status.StatusBadRequest,
-			Status:      dto_api_response.STATUS_ERROR,
-			Code:        http_status.StatusBadRequest,
-			Message:     "Param missing or invalid format, please check and try again",
-			ErrorDetail: detail,
+			HttpCode: http_status.StatusBadRequest,
+			Status:   dto_api_response.STATUS_ERROR,
+			Code:     http_status.StatusBadRequest,
+			Message:  "Param missing or invalid format, please check and try again",
+			Data:     "",
 		}
 		fmt.Println("res", res)
 

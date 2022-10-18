@@ -14,13 +14,13 @@ cache-authen-git:
 	git config --global credential.helper cache
 	// apter pull, push one times, after success
 build-docker-images:
-	docker build   -t balance-service:latest  .
+	docker build   -t balance-service:latest  -f devops/Dockerfile .
 
 build-docker-images-no-cache:
-	docker build   -t balance-service:latest --no-cache=true .
+	docker build   -t balance-query-service:latest --no-cache=true -f devops/Dockerfile .
 
 run-docker-container:
-	docker run -p 8080:8080  --env-file=devops/.env --name payment-balance-service   balance-service:latest
+	docker run -p 8080:8080  --env-file=devops/.env  balance-query-service:latest
 
 
 update-kube-config:

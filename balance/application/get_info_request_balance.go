@@ -24,7 +24,8 @@ func (a *AllPartnerBalanceQuery) GetOneRequestBalance(p query_request_balance.Pa
 	return a.RequestBalanceQuery.HandleOneRequestQuery(p)
 }
 
-func NewAllPartnerBalance(RequestBalanceQuery request_balance_query.OneRequestInterface) AllPartnerBalanceQueryInterface {
+func NewAllPartnerBalanceQuery(RequestBalanceQuery request_balance_query.OneRequestInterface) *AllPartnerBalanceQuery {
+	var _ AllPartnerBalanceQueryInterface = (*AllPartnerBalanceQuery)(nil)
 	return &AllPartnerBalanceQuery{
 		RequestBalanceQuery: RequestBalanceQuery,
 	}

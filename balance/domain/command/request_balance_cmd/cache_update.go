@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	redlock "github.com/Nghiait123456/redlock"
-	"github.com/high-performance-payment-gateway/balance-service/balance/domain/query/request_balance_query"
 	"github.com/high-performance-payment-gateway/balance-service/balance/infrastructure/cache/redis"
 	"github.com/high-performance-payment-gateway/balance-service/balance/infrastructure/db/orm"
 	log "github.com/sirupsen/logrus"
@@ -19,11 +18,19 @@ type (
 		redisCluster redis.RedisClusterInterface
 	}
 
-	ParamQuery   = request_balance_query.ParamQuery
+	ParamQuery struct {
+		OrderId uint64
+	}
+
 	DataResposne struct {
 		Err            error
 		IsOrderIdExist bool
 		Data           orm.BalanceRequestLog
+	}
+
+	DataSavedCache struct {
+		Data       DataQuery
+		IsHaveLock bool
 	}
 
 	UpdateCacheInterface interface {
@@ -31,7 +38,7 @@ type (
 		saveRecordLock() error
 		refreshLock(r *redlock.Mutex) (bool, error)
 		getDataFrDB() DataResposne
-		updateCache(cache request_balance_query.DataSavedCache) error
+		updateCache(cache DataSavedCache) error
 		HandleRequestUpdateCacheFrDB() DataResposne
 	}
 )
@@ -80,7 +87,7 @@ func (u UpdateCache) getExpira() time.Duration {
 	return time.Hour * 24 * 30
 }
 
-func (u *UpdateCache) updateCache(cache request_balance_query.DataSavedCache) error {
+func (u *UpdateCache) updateCache(cache DataSavedCache) error {
 	k := strconv.FormatUint(u.pr.OrderId, 10)
 	err := u.redisCluster.SetKeyWithStructValue(context.Background(), k, cache, u.getExpira())
 	if err != nil {
@@ -116,7 +123,7 @@ func (u *UpdateCache) HandleRequestUpdateCacheFrDB() DataResposne {
 	dataFrDB := u.getDataFrDB()
 	//update cache and rewrite IsHaveLock
 	if dataFrDB.IsOrderIdExist == true && dataFrDB.Err != nil {
-		dataSCache := request_balance_query.DataSavedCache{
+		dataSCache := DataSavedCache{
 			Data:       dataFrDB.Data,
 			IsHaveLock: false,
 		}
@@ -128,7 +135,7 @@ func (u *UpdateCache) HandleRequestUpdateCacheFrDB() DataResposne {
 			panic(panicM)
 		}
 	} else {
-		dataSCache := request_balance_query.DataSavedCache{
+		dataSCache := DataSavedCache{
 			Data:       DataQuery{},
 			IsHaveLock: false,
 		}

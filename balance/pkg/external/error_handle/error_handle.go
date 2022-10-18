@@ -50,14 +50,7 @@ func CustomMessageError(ctx *fiber.Ctx, err error) error {
 }
 
 func LogAndSendErrorText(ctx *fiber.Ctx) string {
-	errId, err := error_identification.GetErrIdFrCtx(ctx)
-	if err != nil {
-		log.WithFields(log.Fields{
-			"errorM": err.Error(),
-		}).Error("dont find ErrIdFrCtx")
-		errId = ""
-	}
-
+	errId := error_identification.GetErrIdFrCtx(ctx)
 	log.WithFields(log.Fields{
 		"errorM": fmt.Sprintf("panic with errId %v", errId),
 	})

@@ -9,7 +9,6 @@ import (
 
 type (
 	OneRequest struct {
-		Data DataQuery
 	}
 
 	DataQuery = orm.BalanceRequestLog
@@ -63,7 +62,7 @@ func (or *OneRequest) HandleOneRequestQuery(qp ParamQuery) DataResponse {
 
 	if rsQrCache.IsContinueUpdateCacheFrDB == true {
 		//todo get fr global value and pass
-		cacheUpdate := request_balance_cmd.NewCacheUpdate(ParamQuery{}, redis.RedLockCluster{}, &redis.RedisCluster{})
+		cacheUpdate := request_balance_cmd.NewCacheUpdate(request_balance_cmd.ParamQuery{OrderId: qp.OrderId}, redis.RedLockCluster{}, &redis.RedisCluster{})
 		rs := cacheUpdate.HandleRequestUpdateCacheFrDB()
 		if rs.IsOrderIdExist == true && rs.Err == nil {
 			return DataResponse{

@@ -39,7 +39,7 @@ func (r *RequestBalanceQuery) GetOneRequestBalance(c *fiber.Ctx) error {
 
 	validate := validate_api.ValidateApiRequestBalance{
 		VB:  validate_base.NewBaseValidate(),
-		Dto: *rqDto,
+		Dto: rqDto.Request,
 	}
 
 	validate.Init()
