@@ -2,17 +2,14 @@ package application
 
 import (
 	"github.com/google/wire"
-	"github.com/high-performance-payment-gateway/balance-service/balance/domain/command/calculator"
-	"github.com/high-performance-payment-gateway/balance-service/balance/domain/command/queue_job_request"
+	"github.com/high-performance-payment-gateway/balance-service/balance/domain/query/request_balance_query"
 )
 
-var ProviderAllPartnerBalance = wire.NewSet(
+var ProviderAllPartnerBalanceQuery = wire.NewSet(
 	NewAllPartnerBalance,
-	calculator.ProviderAllPartner,
-	queue_job_request.NewQueueJob,
-	wire.Bind(new(AllPartnerBalanceInterface), new(*AllPartnerBalance)),
+	wire.Bind(new(request_balance_query.OneRequestInterface), new(*request_balance_query.OneRequest)),
 )
 
 var ProviderService = wire.NewSet(
-	NewService, ProviderAllPartnerBalance, wire.Bind(new(ServiceInterface), new(*Service)),
+	NewService, ProviderAllPartnerBalanceQuery, wire.Bind(new(ServiceInterface), new(*Service)),
 )

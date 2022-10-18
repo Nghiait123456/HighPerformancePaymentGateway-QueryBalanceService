@@ -1,6 +1,8 @@
 package request_balance_query
 
 import (
+	"github.com/high-performance-payment-gateway/balance-service/balance/domain/command/request_balance_cmd"
+	"github.com/high-performance-payment-gateway/balance-service/balance/infrastructure/cache/redis"
 	"github.com/high-performance-payment-gateway/balance-service/balance/infrastructure/db/orm"
 	log "github.com/sirupsen/logrus"
 )
@@ -27,9 +29,7 @@ type (
 	}
 
 	OneRequestInterface interface {
-		GetFromDB() (ResponseQueryDB, error)
-		GetFromCache() ResponseQueryCache
-		CreateRecordLock() error
+		GetFromCache(qp ParamQuery) ResponseQueryCache
 		HandleOneRequestQuery(qp ParamQuery) DataResponse
 	}
 )
@@ -47,7 +47,7 @@ func (or *OneRequest) HandleOneRequestQuery(qp ParamQuery) DataResponse {
 		}).Error("query one request fr DB error")
 
 		return DataResponse{
-			Data:    DataQueryDB{},
+			Data:    DataQuery{},
 			Status:  false,
 			Message: "Please try again late",
 		}
@@ -62,12 +62,27 @@ func (or *OneRequest) HandleOneRequestQuery(qp ParamQuery) DataResponse {
 	}
 
 	if rsQrCache.IsContinueUpdateCacheFrDB == true {
-		//todo update cache end response
+		//todo get fr global value and pass
+		cacheUpdate := request_balance_cmd.NewCacheUpdate(ParamQuery{}, redis.RedLockCluster{}, &redis.RedisCluster{})
+		rs := cacheUpdate.HandleRequestUpdateCacheFrDB()
+		if rs.IsOrderIdExist == true && rs.Err == nil {
+			return DataResponse{
+				Data:    rs.Data,
+				Status:  true,
+				Message: "success",
+			}
+		}
+
+		return DataResponse{
+			Data:    DataQuery{},
+			Status:  false,
+			Message: "have error when update cache",
+		}
 	}
 
 	if rsQrCache.IsUseDataForResponse == false && rsQrCache.IsContinueUpdateCacheFrDB == false {
 		return DataResponse{
-			Data:    DataQueryDB{},
+			Data:    DataQuery{},
 			Status:  false,
 			Message: "data is refreshing, please wait and try again late",
 		}
@@ -77,4 +92,8 @@ func (or *OneRequest) HandleOneRequestQuery(qp ParamQuery) DataResponse {
 	return DataResponse{
 		Status: false,
 	}
+}
+
+func NewOneRequest() OneRequestInterface {
+	return &OneRequest{}
 }

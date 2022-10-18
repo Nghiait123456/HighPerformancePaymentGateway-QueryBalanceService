@@ -45,13 +45,13 @@ func (v *ValidateApiRequestBalance) Init() {
 }
 
 // return struct response, error
-func (v *ValidateApiRequestBalance) Validate() (dto_api_response.ResponseRequestBalanceDto, error) {
+func (v *ValidateApiRequestBalance) Validate() (dto_api_response.ResponseRequestBalanceQuery, error) {
 	errV := v.VB.Validate().Struct(v.Dto)
 	if errV != nil {
 		message, errCE := v.VB.ConvertErrorValidate(errV)
 		if errCE != nil {
 			fmt.Println("invalidate error")
-			res := dto_api_response.ResponseRequestBalanceDto{
+			res := dto_api_response.ResponseRequestBalanceQuery{
 				HttpCode:    http_status.StatusBadRequest,
 				Status:      dto_api_response.STATUS_ERROR,
 				Code:        http_status.StatusBadRequest,
@@ -74,7 +74,7 @@ func (v *ValidateApiRequestBalance) Validate() (dto_api_response.ResponseRequest
 			panic(messageErr)
 		}
 
-		res := dto_api_response.ResponseRequestBalanceDto{
+		res := dto_api_response.ResponseRequestBalanceQuery{
 			HttpCode:    http_status.StatusBadRequest,
 			Status:      dto_api_response.STATUS_ERROR,
 			Code:        http_status.StatusBadRequest,
@@ -86,7 +86,7 @@ func (v *ValidateApiRequestBalance) Validate() (dto_api_response.ResponseRequest
 		return res, errors.New("Validate has errors")
 	}
 
-	return dto_api_response.ResponseRequestBalanceDto{}, nil
+	return dto_api_response.ResponseRequestBalanceQuery{}, nil
 }
 
 func (v ValidateApiRequestBalance) CustomShowError(mE validate.MessageErrors) (error, interface{}) {
