@@ -80,7 +80,7 @@ func (m Module) NewWebServer() web_server.HttpServer {
 
 func (m *Module) ResignApi() {
 	m.HttpServer.Get("balance-query/health-check", m.RouterHttp.apiController.HealthCheck)
-	m.HttpServer.Post("balance-query/request-balance", m.RouterHttp.apiController.GetOneRequestBalance)
+	m.HttpServer.Get("balance-query/one-request-balance-info", m.RouterHttp.apiController.GetOneRequestBalance)
 }
 
 func (m *Module) StartWebServer() {

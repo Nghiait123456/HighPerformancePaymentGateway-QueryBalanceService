@@ -23,7 +23,7 @@ type (
 
 func (one *RequestBalanceQuery) BindDataDto(c *fiber.Ctx) (dto_api_response.ResponseRequestBalanceQuery, error) {
 	var o OneRequestBalanceQueryDto
-	if errBP := c.BodyParser(&o); errBP != nil {
+	if errBP := c.QueryParser(&o); errBP != nil {
 		res := dto_api_response.ResponseRequestBalanceQuery{
 			HttpCode: http_status.StatusBadRequest,
 			Status:   dto_api_response.STATUS_ERROR,
